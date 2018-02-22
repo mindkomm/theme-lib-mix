@@ -41,7 +41,9 @@ function mix( $path, $manifest_directory = 'build' ) {
 	}
 
 	// Get file URL from manifest file
-	$file_url = get_theme_file_uri( trailingslashit( $manifest_directory ) . $manifest[ $path ] );
+	$path = $manifest[ $path ];
+	// Make sure there’s no leading slash
+	$path = ltrim( $path, '/' );
 
-	return $file_url;
+	return get_theme_file_uri( trailingslashit( $manifest_directory ) . $path );
 }
