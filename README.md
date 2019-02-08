@@ -11,7 +11,7 @@ The mix function is useful if you want to enable **cache busting** for your them
 }
 ```
 
-The ID parameter is a hash of the file contents that changes every time that you make a change to a file. The `mix()` function provided in this package allows you to use these hashed URLs for enqueueing your assets in your WordPress theme. 
+The ID parameter is a hash of the file contents that changes every time that you make a change to a file. The `mix()` and `mix_any()` functions provided in this package allow you to use these hashed URLs for enqueueing your assets in your WordPress theme.
 
 ## Installation
 
@@ -38,24 +38,54 @@ If the mix function can’t find your asset file in the manifest file, it will r
 
 ## Functions
 
-| Name | Summary | Type | Returns/Description |
-| --- | --- | --- | --- |
-| [mix](#mix) | Get the path to a versioned Mix file. | `string` | The file URL. |
+| Name | Return Type | Summary/Returns |
+| --- | --- | --- |
+| [mix](#mix) | `string` | Gets the path to a versioned Mix file in a theme.<br><br>*Returns:* The versioned file URL. |
+| [mix_any](#mix_any) | `string` | Gets the path to a versioned Mix file.<br><br>*Returns:* The versioned file URL. |
 
 ### mix
 
-<p class="summary">Gets the path to a versioned Mix file.</p>
+Gets the path to a versioned Mix file in a theme.
 
-Inspired by <https://www.sitepoint.com/use-laravel-mix-non-laravel-projects/>
+Use this function if you want to load theme dependencies. This function will cache the contents
+of the manifest file for you. This also means that you can’t work with different mix locations.
+For that, you’d need to use `mix_any()`.
+
+Inspired by <https://www.sitepoint.com/use-laravel-mix-non-laravel-projects/>.
+
+**since** 1.0.0 
 
 `mix( string $path, string $manifest_directory = build )`
 
-**Returns:** `string` The file URL.
+**Returns:** `string` The versioned file URL.
 
 | Name | Type | Description |
 | --- | --- | --- |
 | $path | `string` | The relative path to the file. |
 | $manifest_directory | `string` | Optional. Custom path to manifest directory. Default 'build'. |
+
+---
+
+### mix\_any
+
+Gets the path to a versioned Mix file.
+
+The difference to the `mix()` function is that for this function, you need to provide the
+absolute paths to the file and the manifest directory. The benefit is that it’s more versatile
+and that you can use it for functionality that might not live in a theme, but in a plugin or a
+symlinked package.
+
+**since** 1.1.0 
+
+`mix_any( string $path, string $manifest_directory, string $manifest_name = mix-manifest.json )`
+
+**Returns:** `string` The versioned file URL.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| $path | `string` | The full path to the file. |
+| $manifest_directory | `string` | The full path to the manifest directory. |
+| $manifest_name | `string` | Optional. The name of the manifest file in `$manifest_directory`. Default `mix-manifest.json`. |
 
 ---
 

@@ -1,21 +1,21 @@
 {
-    "name": "mindkomm/theme-lib-mix",
-    "type": "library",
-    "description": "A Laravel Mix function for WordPress themes",
-    "license": "MIT",
-    "require": {
-      "php": ">=7.0.0"
-    },
-    "autoload": {
-      "files": [
-        "mix.php"
-      ]
-    },
-    "authors": [
-        {
-            "name": "Lukas Gaechter",
-            "email": "lukas.gaechter@mind.ch",
-            "homepage": "https://www.mind.ch"
-        }
+  "name": "mindkomm/theme-lib-mix",
+  "type": "library",
+  "description": "Laravel Mix functions for WordPress projects",
+  "license": "MIT",
+  "require": {
+    "php": ">=7.0.0"
+  },
+  "autoload": {
+    "files": [
+      "mix.php"
     ]
+  },
+  "authors": [
+    {
+      "name": "Lukas Gaechter",
+      "email": "lukas.gaechter@mind.ch",
+      "homepage": "https://www.mind.ch"
+    }
+  ]
 }
