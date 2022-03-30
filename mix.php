@@ -39,7 +39,7 @@ function mix( $path, $args = [] ) {
 	}
 
 	$defaults = [
-		'is_child' => false,
+		'is_child'           => false,
 		'manifest_directory' => 'build',
 	];
 
@@ -96,7 +96,23 @@ function mix( $path, $args = [] ) {
 	$path = ltrim( $path, '/' );
 
 	if ( $args['is_child'] ) {
-		return get_theme_file_uri() . '/' . trailingslashit( $manifest_directory ) . $path;
+		$file = trailingslashit( $manifest_directory ) . $path;
+
+		/**
+		 * We don’t use get_theme_file_uri(), because that function uses file_exists() to check if a
+		 * file exists. If we pass in a full path including an ?id URL parameter, the file_exists()
+		 * check will fail.
+		 */
+		$url = get_stylesheet_directory_uri() . '/' . $file;
+
+		/**
+		 * Pass in the URL to the theme_file_uri filter, because with the line above, we simulate
+		 * the same functionality as get_theme_file_uri(). This should improve compatibility,
+		 * because we use get_theme_file_uri() and get_parent_theme_file_uri() everywhere else.
+		 *
+		 * @see get_theme_file_uri()
+		 */
+		return apply_filters( 'theme_file_uri', $url, $file );
 	}
 
 	return get_parent_theme_file_uri( trailingslashit( $manifest_directory ) . $path );
@@ -132,8 +148,8 @@ function mix_child( $path, $args = [] ) {
  *
  * The difference to the `mix()` function is that for this function, you need to provide the
  * absolute paths to the file and the manifest directory. The benefit is that it’s more versatile
- * and that you can use it for functionality that might not live in a theme, but in a plugin or a
- * symlinked package.
+ * and that you can use it for functionality that might not live in a theme, but in a plugin, vendor
+ * packages or in a symlinked package.
  *
  * @since 1.1.0
  *
@@ -142,6 +158,7 @@ function mix_child( $path, $args = [] ) {
  * @param string $manifest_name      Optional. The name of the manifest file in
  *                                   `$manifest_directory`. Default
  *                                   `mix-manifest.json`.
+ *
  * @return string The versioned file URL.
  */
 function mix_any( $path, $manifest_directory, $manifest_name = 'mix-manifest.json' ) {
