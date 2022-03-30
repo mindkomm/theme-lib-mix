@@ -4,25 +4,57 @@
  * Gets the path to a versioned Mix file in a theme.
  *
  * Use this function if you want to load theme dependencies. This function will cache the contents
- * of the manifest file for you. This also means that you can’t work with different mix locations.
- * For that, you’d need to use `mix_any()`.
+ * of the manifest files for you.
+ *
+ * If you want to use mix in a child theme, use `mix_child()`.
+ * If you want to use mix outside of your theme folder, you can use `mix_any()`.
  *
  * Inspired by <https://www.sitepoint.com/use-laravel-mix-non-laravel-projects/>.
  *
  * @since 1.0.0
  *
  * @param string $path The relative path to the file.
- * @param string $manifest_directory Optional. Custom relative path to manifest directory. Default 'build'.
+ * @param string $args {
+ *     Optional. An array of arguments for the function.
+ *
+ *     @type bool   $is_child           Whether to check the child directory first. Default `false`.
+ *     @type string $manifest_directory Custom relative path to manifest directory. Default `build`.
+ * }
  *
  * @return string The versioned file URL.
  */
-function mix( $path, $manifest_directory = 'build', $args = [] ) {
+function mix( $path, $args = [] ) {
 	// Manifest content cache.
 	static $manifests = [];
 
-	$args = wp_parse_args( $args, [
+	/**
+	 * Backwards compatibility.
+	 *
+	 * @todo Remove in 2.x
+	 */
+	if ( is_string( $args ) ) {
+		$args = [
+			'manifest_directory' => $args,
+		];
+	}
+
+	$defaults = [
 		'is_child' => false,
-	] );
+		'manifest_directory' => 'build',
+	];
+
+	/**
+	 * Filters the default arguments used for the mix function
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param array $defaults An array of default values.
+	 */
+	$defaults = apply_filters( 'theme/mix/args/defaults', $defaults );
+
+	$args = wp_parse_args( $args, $defaults );
+
+	$manifest_directory = $args['manifest_directory'];
 
 	if ( $args['is_child'] ) {
 		$base_path = trailingslashit( get_theme_file_path() );
@@ -71,7 +103,32 @@ function mix( $path, $manifest_directory = 'build', $args = [] ) {
 }
 
 /**
- * Gets the path to a versioned Mix file.
+ * Gets the path to a versioned Mix file in a child theme.
+ *
+ * Similar to `mix()`, but tries to load a file from the child theme first.
+ *
+ * @since 1.2.0
+ *
+ * @param string $path The relative path to the file.
+ * @param string $args {
+ *     Optional. An array of arguments for the function.
+ *
+ *     @type bool   $is_child           Whether to check the child directory first. Default `false`.
+ *     @type string $manifest_directory Custom relative path to manifest directory. Default `build`.
+ * }
+ *
+ * @return string The versioned file URL.
+ */
+function mix_child( $path, $args = [] ) {
+	$args = wp_parse_args( $args, [
+		'is_child' => true,
+	] );
+
+	return mix( $path, $args );
+}
+
+/**
+ * Gets the path to a versioned Mix file outside of your theme folders.
  *
  * The difference to the `mix()` function is that for this function, you need to provide the
  * absolute paths to the file and the manifest directory. The benefit is that it’s more versatile
