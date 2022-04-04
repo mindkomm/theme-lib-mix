@@ -59,12 +59,19 @@ Use this function if you want to load theme dependencies. This function will cac
 
 **Returns:** `string` The versioned file URL.
 
-| Name | Type | Description |
-| --- | --- | --- |
-| $path | `string` | The relative path to the file. |
-| $args | `array` | Optional. An array of arguments for the function. |
+| Name | Type | Description                                                                                                                                                                                                                                                         |
+| --- | --- |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| $path | `string` | The relative path to the file.                                                                                                                                                                                                                                      |
+| $args | `array` | Optional. An array of arguments for the function.<ul><li>*(bool)* **$is_child** – Whether to check the child directory first. Default `false`.</li><li>*(string)* **$manifest_directory** – Custom relative path to manifest directory. Default `build`.</li></ul> |
 
-
+```php
+add_action( 'wp_enqueue_scripts', function() {
+    wp_enqueue_style(
+        'styles',
+        mix( 'build/css/styles.css' )
+    );
+} );
+```
 
 ### mix\_child()
 
