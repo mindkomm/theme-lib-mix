@@ -163,8 +163,8 @@ function mix_child( $path, $args = [] ) {
  */
 function mix_any( $path, $manifest_directory, $manifest_name = 'mix-manifest.json' ) {
 	$file_url = str_replace(
-		trailingslashit( ABSPATH ),
-		trailingslashit( site_url() ),
+		get_template_directory(),
+		get_template_directory_uri(),
 		$path
 	);
 
